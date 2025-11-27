@@ -13,18 +13,23 @@
 
       <link rel="canonical" href="index.html">
       <meta property="og:url" content="https://vuong83op.github.io/hii/">
+      <meta property="og:site_name" content="Thư Mời Cưới">
+      <meta property="og:locale" content="vi_VN">
 
     <meta property="og:title" content="THƯ MỜI CƯỚI QUỐC HẢI &amp; THỊ THÔNG">
     <meta property="og:type" content="website">
     <meta property="og:image" content="https://vuong83op.github.io/hii/images/anhdaidien.jpg">
+    <meta property="og:image:secure_url" content="https://vuong83op.github.io/hii/images/anhdaidien.jpg">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
     <meta property="og:image:type" content="image/jpeg">
+    <meta property="og:image:alt" content="Thư mời cưới Quốc Hải & Thị Thông">
     <meta property="og:description" content="Thư mời cưới Quốc Hải & Thị Thông">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="THƯ MỜI CƯỚI QUỐC HẢI &amp; THỊ THÔNG">
     <meta name="twitter:description" content="Thư mời cưới Quốc Hải & Thị Thông">
     <meta name="twitter:image" content="https://vuong83op.github.io/hii/images/anhdaidien.jpg">
+    <meta name="twitter:image:alt" content="Thư mời cưới Quốc Hải & Thị Thông">
     <meta name="format-detection" content="telephone=no">
     <link rel="icon" href="./images/anhdaidien.jpg" sizes="16x16" />
     <link rel="dns-prefetch" href="https://statics.pancake.vn/">
@@ -552,13 +557,13 @@
   <body ontouchstart>
 
 <!-- Audio control buttons - Always visible - MAXIMUM Z-INDEX to prevent being covered -->
-<div id="custom-audio-play-btn" style="position: fixed !important; left: 20px !important; bottom: 20px !important; width: 50px !important; height: 50px !important; z-index: 2147483647 !important; cursor: pointer !important; background: rgba(255,255,255,0.95) !important; border-radius: 50% !important; display: flex !important; align-items: center !important; justify-content: center !important; box-shadow: 0 2px 10px rgba(0,0,0,0.3) !important; pointer-events: auto !important; visibility: visible !important; opacity: 1 !important; transform: translateZ(0) !important; -webkit-transform: translateZ(0) !important; will-change: transform !important;">
-  <svg width="30" height="30" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<div id="custom-audio-play-btn" onclick="console.log('PLAY BUTTON CLICKED VIA ONCLICK'); if(window.playAudio) { const url = 'https://statics.pancake.vn/web-media/30/2d/16/de/6ef7c8fcf6b86241ef11f111d6d3269a74a27c5ab5a451854d150895-w:0-h:0-l:2426583-t:audio/mpeg.mp3'; window.playAudio(url); document.getElementById('custom-audio-play-btn').style.display='none'; document.getElementById('custom-audio-stop-btn').style.display='flex'; }" style="position: fixed !important; left: 20px !important; bottom: 20px !important; width: 50px !important; height: 50px !important; z-index: 2147483647 !important; cursor: pointer !important; background: rgba(255,255,255,0.95) !important; border-radius: 50% !important; display: flex !important; align-items: center !important; justify-content: center !important; box-shadow: 0 2px 10px rgba(0,0,0,0.3) !important; pointer-events: auto !important; visibility: visible !important; opacity: 1 !important; transform: translateZ(0) !important; -webkit-transform: translateZ(0) !important; will-change: transform !important; user-select: none !important; -webkit-user-select: none !important;">
+  <svg width="30" height="30" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="pointer-events: none;">
     <path d="M8 5v14l11-7z" fill="#000000"/>
   </svg>
 </div>
-<div id="custom-audio-stop-btn" style="position: fixed !important; left: 20px !important; bottom: 20px !important; width: 50px !important; height: 50px !important; z-index: 2147483647 !important; cursor: pointer !important; background: rgba(255,255,255,0.95) !important; border-radius: 50% !important; display: none !important; align-items: center !important; justify-content: center !important; box-shadow: 0 2px 10px rgba(0,0,0,0.3) !important; pointer-events: auto !important; visibility: visible !important; opacity: 1 !important; transform: translateZ(0) !important; -webkit-transform: translateZ(0) !important; will-change: transform !important;">
-  <svg width="30" height="30" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<div id="custom-audio-stop-btn" onclick="console.log('STOP BUTTON CLICKED VIA ONCLICK'); if(window.stopAudio) { window.stopAudio(); } document.getElementById('custom-audio-stop-btn').style.display='none'; document.getElementById('custom-audio-play-btn').style.display='flex';" style="position: fixed !important; left: 20px !important; bottom: 20px !important; width: 50px !important; height: 50px !important; z-index: 2147483647 !important; cursor: pointer !important; background: rgba(255,255,255,0.95) !important; border-radius: 50% !important; display: none !important; align-items: center !important; justify-content: center !important; box-shadow: 0 2px 10px rgba(0,0,0,0.3) !important; pointer-events: auto !important; visibility: visible !important; opacity: 1 !important; transform: translateZ(0) !important; -webkit-transform: translateZ(0) !important; will-change: transform !important; user-select: none !important; -webkit-user-select: none !important;">
+  <svg width="30" height="30" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="pointer-events: none;">
     <rect x="6" y="6" width="12" height="12" fill="#000000"/>
   </svg>
 </div>
