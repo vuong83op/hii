@@ -467,11 +467,51 @@
       visibility: hidden !important;
     }
   }
+  
+  /* Custom audio button styles - ALWAYS visible */
+  #custom-audio-play-btn,
+  #custom-audio-stop-btn {
+    position: fixed !important;
+    left: 20px !important;
+    bottom: 20px !important;
+    width: 50px !important;
+    height: 50px !important;
+    z-index: 999999 !important;
+    cursor: pointer !important;
+    background: rgba(255, 255, 255, 0.95) !important;
+    border-radius: 50% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3) !important;
+    pointer-events: auto !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+  }
+  
+  #custom-audio-stop-btn {
+    display: none !important;
+  }
+  
+  #custom-audio-play-btn {
+    display: flex !important;
+  }
 </style>
 
   </head>
   <body ontouchstart>
 
+<!-- Audio control buttons - Always visible -->
+<div id="custom-audio-play-btn" style="position: fixed !important; left: 20px !important; bottom: 20px !important; width: 50px !important; height: 50px !important; z-index: 999999 !important; cursor: pointer !important; background: rgba(255,255,255,0.95) !important; border-radius: 50% !important; display: flex !important; align-items: center !important; justify-content: center !important; box-shadow: 0 2px 10px rgba(0,0,0,0.3) !important; pointer-events: auto !important;">
+  <svg width="30" height="30" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M8 5v14l11-7z" fill="#000000"/>
+  </svg>
+</div>
+<div id="custom-audio-stop-btn" style="position: fixed !important; left: 20px !important; bottom: 20px !important; width: 50px !important; height: 50px !important; z-index: 999999 !important; cursor: pointer !important; background: rgba(255,255,255,0.95) !important; border-radius: 50% !important; display: none !important; align-items: center !important; justify-content: center !important; box-shadow: 0 2px 10px rgba(0,0,0,0.3) !important; pointer-events: auto !important;">
+  <svg width="30" height="30" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect x="6" y="6" width="12" height="12" fill="#000000"/>
+  </svg>
+</div>
 
 <div class="pageview"><div id='webcake-alert-msg' class='w-alert-message-wrapper' style="display: none;z-index:9999999;"></div><div   id="w-5fieb1sl" class="com-section"data-section><div class="section-wrapper full-width full-height p-relative"><div class="section-background p-absolute full-width full-height lazy"></div><div class="section-container full-height p-relative"><div   id="w-593k3hdo" class="com-image-block p-absolute"><div class="image-block-css p-relative full-width full-height full-mask-size mask-position"><div class="image-background p-absolute lazy"></div></div></div><div   id="w-xt9665eb" class="com-text-block p-absolute is-animation"><div class="text-block"><h2 class="text-block-css full-width">THƯ MỜI TIỆC CƯỚI</h2></div></div><div   id="w-libmqckf" class="com-text-block p-absolute is-animation"><div class="full-width full-height"><div class="text-block"><h1 class="text-block-css full-width">Quốc Hải - Thị Thông</h1></div></div></div><div   id="w-dqvmzi6o" class="com-text-block p-absolute is-animation"><div class="text-block"><h2 class="text-block-css full-width">Chủ Nhật - 17H30<br></h2></div></div><div   id="w-nk5wr3l0" class="p-absolute is-animation"><div class="line-css full-width"><div class="line-container"></div></div></div><div   id="w-2wfccz0r" class="p-absolute is-animation"><div class="line-css full-width"><div class="line-container"></div></div></div><div   id="w-fohw3jt3" class="com-text-block p-absolute is-animation"><div class="text-block"><h2 class="text-block-css full-width">30.11.2025</h2></div></div><div   id="w-f0fwyhbu" class="com-image-block p-absolute"><div class="image-block-css p-relative full-width full-height full-mask-size mask-position"><div class="image-background p-absolute lazy"></div></div></div><div   id="w-17tsexjy" class="com-image-block p-absolute"><div class="image-block-css p-relative full-width full-height full-mask-size mask-position"><div class="image-background p-absolute lazy"></div></div></div><div   id="w-m1l6yd27" class="com-image-block p-absolute"><div class="image-block-css p-relative full-width full-height full-mask-size mask-position"><div class="image-background p-absolute lazy"></div></div></div></div></div></div><div   id="w-f9da4ivv" class="com-section"data-section><div class="section-wrapper full-width full-height p-relative"><div class="section-background p-absolute full-width full-height lazy"></div><div class="section-container full-height p-relative"><div   id="w-6u8c2qnm" class="com-rectangle p-absolute is-animation"><div class="rectangle-css full-mask-size mask-position full-height full-width lazy"></div></div><div   id="w-gvymydtl" class="com-text-block p-absolute is-animation"><div class="text-block"><p class="text-block-css full-width">“Hôn nhân là chuyện cả đời,<br>Yêu người vừa ý, cưới người mình thương...</p></div></div><div   id="w-4yh6c15f" class="com-text-block p-absolute is-animation"><div class="text-block"><p class="text-block-css full-width">&nbsp;NHÀ TRAI<br><br></p></div></div><div   id="w-gbb0dhda" class="com-text-block p-absolute is-animation"><div class="text-block"><p class="text-block-css full-width">Quốc Hải</p></div></div><div   id="w-vw5ecqpv" class="com-text-block p-absolute is-animation"><div class="text-block"><p class="text-block-css full-width">Chú Rể</p></div></div><div   id="w-mc4jcf6g" class="com-image-block p-absolute is-animation"><div class="image-block-css p-relative full-width full-height full-mask-size mask-position"><div class="image-background p-absolute lazy"></div></div></div><div   id="w-yexoi8q6" class="com-text-block p-absolute is-animation"><div class="text-block"><p class="text-block-css full-width">&nbsp;NHÀ GÁI<br><br></p></div></div><div   id="w-mqnzgrxx" class="com-image-block p-absolute is-animation"><div class="image-block-css p-relative full-width full-height full-mask-size mask-position"><div class="image-background p-absolute lazy"></div></div></div><div   id="w-pw4r678c" class="com-image-block p-absolute is-animation"><div class="image-block-css p-relative full-width full-height full-mask-size mask-position"><div class="image-background p-absolute lazy"></div></div></div><div   id="w-rqfmwf25" class="com-text-block p-absolute is-animation"><div class="text-block"><p class="text-block-css full-width">Đội 1 - Long Thành,<br>Tịnh Thiện - Quảng Ngãi</p></div></div><div   id="w-5k64180q" class="com-text-block p-absolute is-animation"><div class="text-block"><p class="text-block-css full-width">Xóm 1 - Kỳ Xuyên,<br>Tịnh Kỳ - Quảng Ngãi</p></div></div><div   id="w-dhl4ax4w" class="com-text-block p-absolute is-animation"><div class="text-block"><p class="text-block-css full-width">Thị Thông</p></div></div><div   id="w-yqswjsi4" class="com-text-block p-absolute is-animation"><div class="text-block"><p class="text-block-css full-width">Cô Dâu</p></div></div><div   id="w-38exi7p9" class="com-text-block p-absolute is-animation"><div class="text-block"><p class="text-block-css full-width">ÔNG DIỆP THANH THỦY
 <br>BÀ ĐÀO THỊ NGỌC HƯƠNG<br></p></div></div><div   id="w-6kdhwvkd" class="com-text-block p-absolute is-animation"><div class="text-block"><p class="text-block-css full-width">ÔNG VÕ DỰ
@@ -1170,95 +1210,93 @@
       setTimeout(injectAudioButtonStyles, 500);
       setTimeout(injectAudioButtonStyles, 1000);
       
-      // Create a new audio button if the original ones don't exist or aren't visible
-      function createAudioButtonIfNeeded() {
-        const playBtn = document.getElementById('w-17tsexjy');
-        const stopBtn = document.getElementById('w-m1l6yd27');
+      // Connect event handlers to the HTML audio buttons
+      function setupCustomAudioButtons() {
+        const playBtn = document.getElementById('custom-audio-play-btn');
+        const stopBtn = document.getElementById('custom-audio-stop-btn');
         
-        // Check if buttons exist and are visible
-        const playBtnVisible = playBtn && 
-          window.getComputedStyle(playBtn).display !== 'none' && 
-          window.getComputedStyle(playBtn).visibility !== 'hidden' &&
-          window.getComputedStyle(playBtn).opacity !== '0';
+        if (!playBtn || !stopBtn) return;
         
-        // If play button doesn't exist or isn't visible, create a new one
-        if (!playBtnVisible) {
-          // Remove any existing custom audio button
-          const existingCustomBtn = document.getElementById('custom-audio-play-btn');
-          if (existingCustomBtn) {
-            existingCustomBtn.remove();
-          }
-          
-          // Get audio URL from event_data
-          let audioUrl = null;
-          if (window.event_data && window.event_data.runtime && window.event_data.runtime.vm) {
-            const elementData = window.event_data.runtime.vm['17tsexjy'];
-            if (elementData && elementData.events) {
-              elementData.events.forEach(function(event) {
-                if (event.action === 'play_audio' && event.target) {
-                  audioUrl = event.target;
-                }
-              });
-            }
-          }
-          
-          // Create play button
-          const customPlayBtn = document.createElement('div');
-          customPlayBtn.id = 'custom-audio-play-btn';
-          customPlayBtn.innerHTML = '<svg width="50" height="50" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="10" fill="#ffffff" stroke="#000000" stroke-width="2"/><path d="M9 8v8l6-4z" fill="#000000"/></svg>';
-          customPlayBtn.style.cssText = 'position: fixed !important; left: 20px !important; bottom: 20px !important; width: 50px !important; height: 50px !important; z-index: 999999 !important; cursor: pointer !important; background: rgba(255,255,255,0.9) !important; border-radius: 50% !important; display: flex !important; align-items: center !important; justify-content: center !important; box-shadow: 0 2px 10px rgba(0,0,0,0.3) !important;';
-          
-          customPlayBtn.addEventListener('click', function(e) {
-            e.preventDefault();
-            e.stopPropagation();
-            if (audioUrl && window.playAudio) {
-              window.playAudio(audioUrl);
-              // Hide play button, show stop button
-              customPlayBtn.style.display = 'none';
-              const customStopBtn = document.getElementById('custom-audio-stop-btn');
-              if (customStopBtn) {
-                customStopBtn.style.display = 'flex';
-              } else {
-                createStopButton(audioUrl);
+        // Get audio URL from event_data
+        let audioUrl = null;
+        if (window.event_data && window.event_data.runtime && window.event_data.runtime.vm) {
+          const elementData = window.event_data.runtime.vm['17tsexjy'];
+          if (elementData && elementData.events) {
+            elementData.events.forEach(function(event) {
+              if (event.action === 'play_audio' && event.target) {
+                audioUrl = event.target;
               }
-            }
-          });
-          
-          document.body.appendChild(customPlayBtn);
+            });
+          }
         }
         
-        // Create stop button if needed
-        function createStopButton(audioUrl) {
-          const customStopBtn = document.createElement('div');
-          customStopBtn.id = 'custom-audio-stop-btn';
-          customStopBtn.innerHTML = '<svg width="50" height="50" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="10" fill="#ffffff" stroke="#000000" stroke-width="2"/><rect x="8" y="8" width="8" height="8" fill="#000000"/></svg>';
-          customStopBtn.style.cssText = 'position: fixed !important; left: 20px !important; bottom: 20px !important; width: 50px !important; height: 50px !important; z-index: 999999 !important; cursor: pointer !important; background: rgba(255,255,255,0.9) !important; border-radius: 50% !important; display: none !important; align-items: center !important; justify-content: center !important; box-shadow: 0 2px 10px rgba(0,0,0,0.3) !important;';
-          
-          customStopBtn.addEventListener('click', function(e) {
+        // Fallback audio URL
+        if (!audioUrl) {
+          audioUrl = 'https://statics.pancake.vn/web-media/30/2d/16/de/6ef7c8fcf6b86241ef11f111d6d3269a74a27c5ab5a451854d150895-w:0-h:0-l:2426583-t:audio/mpeg.mp3';
+        }
+        
+        // Setup play button
+        if (playBtn && !playBtn.dataset.setup) {
+          playBtn.dataset.setup = 'true';
+          playBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            // Get audio URL
+            let urlToPlay = audioUrl;
+            if (!urlToPlay && window.event_data && window.event_data.runtime && window.event_data.runtime.vm) {
+              const elementData = window.event_data.runtime.vm['17tsexjy'];
+              if (elementData && elementData.events) {
+                elementData.events.forEach(function(event) {
+                  if (event.action === 'play_audio' && event.target) {
+                    urlToPlay = event.target;
+                  }
+                });
+              }
+            }
+            if (!urlToPlay) {
+              urlToPlay = 'https://statics.pancake.vn/web-media/30/2d/16/de/6ef7c8fcf6b86241ef11f111d6d3269a74a27c5ab5a451854d150895-w:0-h:0-l:2426583-t:audio/mpeg.mp3';
+            }
+            if (window.playAudio) {
+              window.playAudio(urlToPlay);
+            }
+            playBtn.style.display = 'none';
+            stopBtn.style.display = 'flex';
+          });
+        }
+        
+        // Setup stop button
+        if (stopBtn && !stopBtn.dataset.setup) {
+          stopBtn.dataset.setup = 'true';
+          stopBtn.addEventListener('click', function(e) {
             e.preventDefault();
             e.stopPropagation();
             if (window.stopAudio) {
               window.stopAudio();
-              // Hide stop button, show play button
-              customStopBtn.style.display = 'none';
-              const customPlayBtn = document.getElementById('custom-audio-play-btn');
-              if (customPlayBtn) {
-                customPlayBtn.style.display = 'flex';
-              }
             }
+            stopBtn.style.display = 'none';
+            playBtn.style.display = 'flex';
           });
-          
-          document.body.appendChild(customStopBtn);
         }
+        
+        // Ensure buttons are visible
+        playBtn.style.display = 'flex';
+        playBtn.style.visibility = 'visible';
+        playBtn.style.opacity = '1';
+        playBtn.style.zIndex = '999999';
+        stopBtn.style.display = 'none';
       }
       
-      // Try to create button after delays
-      setTimeout(createAudioButtonIfNeeded, 500);
-      setTimeout(createAudioButtonIfNeeded, 1000);
-      setTimeout(createAudioButtonIfNeeded, 2000);
-      window.addEventListener('load', function() {
-        setTimeout(createAudioButtonIfNeeded, 500);
-      });
+      // Setup buttons when DOM is ready
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', setupCustomAudioButtons);
+      } else {
+        setupCustomAudioButtons();
+      }
+      
+      window.addEventListener('load', setupCustomAudioButtons);
+      setTimeout(setupCustomAudioButtons, 100);
+      setTimeout(setupCustomAudioButtons, 500);
+      setTimeout(setupCustomAudioButtons, 1000);
     </script>
 </body>
 
