@@ -443,45 +443,129 @@
 
     <script>
       // Auto-add animation class to elements with is-animation class
-      function initAnimations() {
-        const animatedElements = document.querySelectorAll('.is-animation:not(.animation)');
+      function initAnimations(forceRefresh) {
+        const animatedElements = document.querySelectorAll('.is-animation');
         animatedElements.forEach(function(el) {
-          el.classList.add('animation');
+          if (forceRefresh) {
+            // Remove and re-add to force re-animation
+            el.classList.remove('animation');
+            // Force reflow
+            void el.offsetWidth;
+          }
+          // Add animation class
+          if (!el.classList.contains('animation')) {
+            el.classList.add('animation');
+          }
         });
       }
       
       // Initialize animations when DOM is ready
       function runAnimationInit() {
-        // Add animation class immediately to visible elements
-        initAnimations();
+        // Add animation class to all is-animation elements
+        initAnimations(false);
         
         // Use IntersectionObserver for scroll-triggered animations
-        const observer = new IntersectionObserver(function(entries) {
-          entries.forEach(function(entry) {
-            if (entry.isIntersecting) {
-              entry.target.classList.add('animation');
-              observer.unobserve(entry.target);
-            }
+        // This ensures elements animate when they come into view
+        if ('IntersectionObserver' in window) {
+          const observer = new IntersectionObserver(function(entries) {
+            entries.forEach(function(entry) {
+              if (entry.isIntersecting) {
+                entry.target.classList.add('animation');
+                observer.unobserve(entry.target);
+              }
+            });
+          }, { 
+            threshold: 0.01, 
+            rootMargin: '50px' 
           });
-        }, { threshold: 0.1, rootMargin: '50px' });
-        
-        // Observe all animation elements
-        document.querySelectorAll('.is-animation').forEach(function(el) {
-          if (!el.classList.contains('animation')) {
+          
+          // Observe all animation elements
+          document.querySelectorAll('.is-animation').forEach(function(el) {
             observer.observe(el);
-          }
+          });
+        }
+      }
+      
+      // Function to ensure all animations are active
+      function ensureAllAnimations() {
+        // Add animation class to all elements immediately
+        document.querySelectorAll('.is-animation').forEach(function(el) {
+          el.classList.add('animation');
         });
       }
       
-      // Run immediately and also wait for DOM
+      // Run immediately
+      ensureAllAnimations();
+      
+      // Run when DOM is ready
       if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', runAnimationInit);
+        document.addEventListener('DOMContentLoaded', function() {
+          runAnimationInit();
+          ensureAllAnimations();
+        });
       } else {
         runAnimationInit();
+        ensureAllAnimations();
       }
       
-      // Also run after a short delay to catch late-loaded elements
-      setTimeout(runAnimationInit, 500);
+      // Run after short delays to catch late-loaded elements
+      setTimeout(function() {
+        ensureAllAnimations();
+        runAnimationInit();
+      }, 50);
+      
+      setTimeout(function() {
+        ensureAllAnimations();
+      }, 200);
+      
+      setTimeout(function() {
+        ensureAllAnimations();
+        initAnimations(true); // Force refresh
+      }, 500);
+      
+      // Re-trigger when window fully loads
+      window.addEventListener('load', function() {
+        setTimeout(function() {
+          ensureAllAnimations();
+          initAnimations(true);
+        }, 100);
+      });
+      
+      // Re-trigger on scroll for any missed elements
+      let scrollTimeout;
+      window.addEventListener('scroll', function() {
+        clearTimeout(scrollTimeout);
+        scrollTimeout = setTimeout(function() {
+          ensureAllAnimations();
+        }, 50);
+      }, { passive: true });
+      
+      // MutationObserver to catch dynamically added elements
+      if ('MutationObserver' in window) {
+        const mutationObserver = new MutationObserver(function(mutations) {
+          mutations.forEach(function(mutation) {
+            mutation.addedNodes.forEach(function(node) {
+              if (node.nodeType === 1) { // Element node
+                if (node.classList && node.classList.contains('is-animation')) {
+                  node.classList.add('animation');
+                }
+                // Check children
+                const children = node.querySelectorAll && node.querySelectorAll('.is-animation');
+                if (children) {
+                  children.forEach(function(el) {
+                    el.classList.add('animation');
+                  });
+                }
+              }
+            });
+          });
+        });
+        
+        mutationObserver.observe(document.body, {
+          childList: true,
+          subtree: true
+        });
+      }
       
       // Also try after delays in case elements are added dynamically
       setTimeout(initAnimations, 100);
