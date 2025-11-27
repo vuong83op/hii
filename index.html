@@ -240,6 +240,27 @@
   #w-0khj1efc {
     display: none !important;
   }
+  
+  /* Ensure audio buttons are visible */
+  #w-f0fwyhbu,
+  #w-17tsexjy,
+  #w-m1l6yd27 {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    z-index: 9999 !important;
+    cursor: pointer !important;
+    pointer-events: auto !important;
+  }
+  
+  /* Hide stop button initially, show play button */
+  #w-m1l6yd27 {
+    display: none !important;
+  }
+  
+  #w-17tsexjy {
+    display: block !important;
+  }
 </style>
 
   </head>
@@ -800,21 +821,62 @@
         }
       }
       
+      // Function to ensure audio buttons are visible
+      function ensureAudioButtonsVisible() {
+        const playBtn = document.getElementById('w-17tsexjy');
+        const stopBtn = document.getElementById('w-m1l6yd27');
+        
+        if (playBtn) {
+          playBtn.style.display = '';
+          playBtn.style.visibility = 'visible';
+          playBtn.style.opacity = '1';
+          playBtn.style.zIndex = '9999';
+          playBtn.style.cursor = 'pointer';
+          playBtn.style.pointerEvents = 'auto';
+        }
+        
+        // Stop button should be hidden initially
+        if (stopBtn) {
+          stopBtn.style.display = 'none';
+        }
+      }
+      
       // Setup audio buttons when DOM is ready
       if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', setupAudioButtons);
+        document.addEventListener('DOMContentLoaded', function() {
+          setupAudioButtons();
+          ensureAudioButtonsVisible();
+        });
       } else {
         setupAudioButtons();
+        ensureAudioButtonsVisible();
       }
       
       // Also setup after delays
-      setTimeout(setupAudioButtons, 100);
-      setTimeout(setupAudioButtons, 500);
-      setTimeout(setupAudioButtons, 1000);
+      setTimeout(function() {
+        setupAudioButtons();
+        ensureAudioButtonsVisible();
+      }, 100);
+      
+      setTimeout(function() {
+        setupAudioButtons();
+        ensureAudioButtonsVisible();
+      }, 500);
+      
+      setTimeout(function() {
+        setupAudioButtons();
+        ensureAudioButtonsVisible();
+      }, 1000);
       
       window.addEventListener('load', function() {
-        setTimeout(setupAudioButtons, 100);
+        setTimeout(function() {
+          setupAudioButtons();
+          ensureAudioButtonsVisible();
+        }, 100);
       });
+      
+      // Keep checking and ensuring buttons are visible
+      setInterval(ensureAudioButtonsVisible, 1000);
     </script>
 </body>
 
