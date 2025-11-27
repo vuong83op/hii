@@ -1169,6 +1169,96 @@
       setTimeout(injectAudioButtonStyles, 100);
       setTimeout(injectAudioButtonStyles, 500);
       setTimeout(injectAudioButtonStyles, 1000);
+      
+      // Create a new audio button if the original ones don't exist or aren't visible
+      function createAudioButtonIfNeeded() {
+        const playBtn = document.getElementById('w-17tsexjy');
+        const stopBtn = document.getElementById('w-m1l6yd27');
+        
+        // Check if buttons exist and are visible
+        const playBtnVisible = playBtn && 
+          window.getComputedStyle(playBtn).display !== 'none' && 
+          window.getComputedStyle(playBtn).visibility !== 'hidden' &&
+          window.getComputedStyle(playBtn).opacity !== '0';
+        
+        // If play button doesn't exist or isn't visible, create a new one
+        if (!playBtnVisible) {
+          // Remove any existing custom audio button
+          const existingCustomBtn = document.getElementById('custom-audio-play-btn');
+          if (existingCustomBtn) {
+            existingCustomBtn.remove();
+          }
+          
+          // Get audio URL from event_data
+          let audioUrl = null;
+          if (window.event_data && window.event_data.runtime && window.event_data.runtime.vm) {
+            const elementData = window.event_data.runtime.vm['17tsexjy'];
+            if (elementData && elementData.events) {
+              elementData.events.forEach(function(event) {
+                if (event.action === 'play_audio' && event.target) {
+                  audioUrl = event.target;
+                }
+              });
+            }
+          }
+          
+          // Create play button
+          const customPlayBtn = document.createElement('div');
+          customPlayBtn.id = 'custom-audio-play-btn';
+          customPlayBtn.innerHTML = '<svg width="50" height="50" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="10" fill="#ffffff" stroke="#000000" stroke-width="2"/><path d="M9 8v8l6-4z" fill="#000000"/></svg>';
+          customPlayBtn.style.cssText = 'position: fixed !important; left: 20px !important; bottom: 20px !important; width: 50px !important; height: 50px !important; z-index: 999999 !important; cursor: pointer !important; background: rgba(255,255,255,0.9) !important; border-radius: 50% !important; display: flex !important; align-items: center !important; justify-content: center !important; box-shadow: 0 2px 10px rgba(0,0,0,0.3) !important;';
+          
+          customPlayBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            if (audioUrl && window.playAudio) {
+              window.playAudio(audioUrl);
+              // Hide play button, show stop button
+              customPlayBtn.style.display = 'none';
+              const customStopBtn = document.getElementById('custom-audio-stop-btn');
+              if (customStopBtn) {
+                customStopBtn.style.display = 'flex';
+              } else {
+                createStopButton(audioUrl);
+              }
+            }
+          });
+          
+          document.body.appendChild(customPlayBtn);
+        }
+        
+        // Create stop button if needed
+        function createStopButton(audioUrl) {
+          const customStopBtn = document.createElement('div');
+          customStopBtn.id = 'custom-audio-stop-btn';
+          customStopBtn.innerHTML = '<svg width="50" height="50" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="10" fill="#ffffff" stroke="#000000" stroke-width="2"/><rect x="8" y="8" width="8" height="8" fill="#000000"/></svg>';
+          customStopBtn.style.cssText = 'position: fixed !important; left: 20px !important; bottom: 20px !important; width: 50px !important; height: 50px !important; z-index: 999999 !important; cursor: pointer !important; background: rgba(255,255,255,0.9) !important; border-radius: 50% !important; display: none !important; align-items: center !important; justify-content: center !important; box-shadow: 0 2px 10px rgba(0,0,0,0.3) !important;';
+          
+          customStopBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            if (window.stopAudio) {
+              window.stopAudio();
+              // Hide stop button, show play button
+              customStopBtn.style.display = 'none';
+              const customPlayBtn = document.getElementById('custom-audio-play-btn');
+              if (customPlayBtn) {
+                customPlayBtn.style.display = 'flex';
+              }
+            }
+          });
+          
+          document.body.appendChild(customStopBtn);
+        }
+      }
+      
+      // Try to create button after delays
+      setTimeout(createAudioButtonIfNeeded, 500);
+      setTimeout(createAudioButtonIfNeeded, 1000);
+      setTimeout(createAudioButtonIfNeeded, 2000);
+      window.addEventListener('load', function() {
+        setTimeout(createAudioButtonIfNeeded, 500);
+      });
     </script>
 </body>
 
