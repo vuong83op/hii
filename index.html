@@ -588,21 +588,46 @@
       let audioPlayer = null;
       
       window.playAudio = function(audioUrl) {
-        if (!audioUrl) return;
+        if (!audioUrl) {
+          console.log('No audio URL provided');
+          return;
+        }
+        
+        // Stop any existing audio
         if (audioPlayer) {
           audioPlayer.pause();
           audioPlayer = null;
         }
+        
         try {
+          // Create new audio player
           audioPlayer = new Audio(audioUrl);
           audioPlayer.loop = true;
           audioPlayer.volume = 0.7;
-          audioPlayer.play().catch(function(err) {
-            console.log('Audio play failed:', err);
-            // User interaction required for autoplay - wait for user click
+          
+          // Handle audio events
+          audioPlayer.addEventListener('error', function(e) {
+            console.log('Audio error:', e);
+            console.log('Audio URL:', audioUrl);
           });
+          
+          audioPlayer.addEventListener('canplay', function() {
+            audioPlayer.play().catch(function(err) {
+              console.log('Audio play failed:', err);
+              // This is normal - browser requires user interaction
+            });
+          });
+          
+          // Try to play immediately (may fail if no user interaction)
+          audioPlayer.play().catch(function(err) {
+            console.log('Audio play immediate failed (this is normal):', err);
+            // Load the audio even if play fails
+            audioPlayer.load();
+          });
+          
         } catch(err) {
           console.log('Audio creation failed:', err);
+          console.log('Audio URL:', audioUrl);
         }
       };
       
@@ -615,45 +640,181 @@
       };
       
       // Handle audio events - listen for webcake audio events
-      document.addEventListener('click', function(e) {
-        const clickedEl = e.target.closest('[id^="w-"]');
-        const clickedId = clickedEl?.id;
+      function handleAudioClick(e) {
+        let clickedEl = e.target;
         
-        if (clickedId && window.event_data && window.event_data.runtime && window.event_data.runtime.vm) {
-          // Find element data in event_data
-          const elementData = window.event_data.runtime.vm[clickedId.replace('w-', '')];
+        // Find the closest element with id starting with "w-"
+        while (clickedEl && clickedEl !== document.body) {
+          if (clickedEl.id && clickedEl.id.startsWith('w-')) {
+            break;
+          }
+          clickedEl = clickedEl.parentElement;
+        }
+        
+        if (!clickedEl || !clickedEl.id) {
+          return;
+        }
+        
+        const clickedId = clickedEl.id;
+        const elementId = clickedId.replace('w-', '');
+        
+        // Check event_data
+        if (window.event_data && window.event_data.runtime && window.event_data.runtime.vm) {
+          const elementData = window.event_data.runtime.vm[elementId];
           
-          if (elementData && elementData.events) {
+          if (elementData && elementData.events && Array.isArray(elementData.events)) {
             elementData.events.forEach(function(event) {
               if (event.type === 'click') {
+                // Handle play_audio
                 if (event.action === 'play_audio' && event.target) {
-                  // Play audio
+                  e.preventDefault();
+                  e.stopPropagation();
                   if (window.playAudio) {
                     window.playAudio(event.target);
                   }
-                } else if (event.action === 'stop_audio') {
-                  // Stop audio
+                  // Handle show/hide
+                  if (event.action === 'show_hide_element') {
+                    handleShowHide(event);
+                  }
+                }
+                // Handle stop_audio
+                else if (event.action === 'stop_audio') {
+                  e.preventDefault();
+                  e.stopPropagation();
                   if (window.stopAudio) {
                     window.stopAudio();
                   }
-                }
-                
-                // Handle show/hide element actions
-                if (event.action === 'show_hide_element' && event.target) {
-                  const targetEl = document.getElementById(event.target);
-                  if (targetEl) {
-                    if (event.onlyMode === 'show') {
-                      targetEl.style.display = '';
-                    } else if (event.onlyMode === 'hide') {
-                      targetEl.style.display = 'none';
-                    }
+                  // Handle show/hide
+                  if (event.action === 'show_hide_element') {
+                    handleShowHide(event);
                   }
+                }
+                // Handle show_hide_element separately
+                if (event.action === 'show_hide_element' && event.target) {
+                  handleShowHide(event);
                 }
               }
             });
           }
         }
-      }, true);
+        
+        // Also check direct element clicks for audio buttons
+        if (clickedId === 'w-17tsexjy' || clickedId === 'w-m1l6yd27') {
+          if (window.event_data && window.event_data.runtime && window.event_data.runtime.vm) {
+            const elementData = window.event_data.runtime.vm[elementId];
+            if (elementData && elementData.events) {
+              elementData.events.forEach(function(event) {
+                if (event.type === 'click') {
+                  if (event.action === 'play_audio' && event.target && clickedId === 'w-17tsexjy') {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    window.playAudio(event.target);
+                    // Hide play button, show stop button
+                    const playBtn = document.getElementById('w-17tsexjy');
+                    const stopBtn = document.getElementById('w-m1l6yd27');
+                    if (playBtn) playBtn.style.display = 'none';
+                    if (stopBtn) stopBtn.style.display = '';
+                  } else if (event.action === 'stop_audio' && clickedId === 'w-m1l6yd27') {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    window.stopAudio();
+                    // Hide stop button, show play button
+                    const playBtn = document.getElementById('w-17tsexjy');
+                    const stopBtn = document.getElementById('w-m1l6yd27');
+                    if (playBtn) playBtn.style.display = '';
+                    if (stopBtn) stopBtn.style.display = 'none';
+                  }
+                }
+              });
+            }
+          }
+        }
+      }
+      
+      // Helper function to handle show/hide
+      function handleShowHide(event) {
+        if (event.target) {
+          const targetEl = document.getElementById(event.target);
+          if (targetEl) {
+            if (event.onlyMode === 'show') {
+              targetEl.style.display = '';
+            } else if (event.onlyMode === 'hide') {
+              targetEl.style.display = 'none';
+            }
+          }
+        }
+      }
+      
+      // Add click listeners with capture phase for better compatibility
+      document.addEventListener('click', handleAudioClick, true);
+      
+      // Also add direct listeners to audio buttons
+      function setupAudioButtons() {
+        const playBtn = document.getElementById('w-17tsexjy');
+        const stopBtn = document.getElementById('w-m1l6yd27');
+        
+        if (playBtn && !playBtn.dataset.listenerAdded) {
+          playBtn.dataset.listenerAdded = 'true';
+          playBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            if (window.event_data && window.event_data.runtime && window.event_data.runtime.vm) {
+              const elementData = window.event_data.runtime.vm['17tsexjy'];
+              if (elementData && elementData.events) {
+                elementData.events.forEach(function(event) {
+                  if (event.action === 'play_audio' && event.target) {
+                    window.playAudio(event.target);
+                    if (playBtn) playBtn.style.display = 'none';
+                    if (stopBtn) stopBtn.style.display = '';
+                  }
+                  if (event.action === 'show_hide_element') {
+                    handleShowHide(event);
+                  }
+                });
+              }
+            }
+          }, true);
+        }
+        
+        if (stopBtn && !stopBtn.dataset.listenerAdded) {
+          stopBtn.dataset.listenerAdded = 'true';
+          stopBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            if (window.event_data && window.event_data.runtime && window.event_data.runtime.vm) {
+              const elementData = window.event_data.runtime.vm['m1l6yd27'];
+              if (elementData && elementData.events) {
+                elementData.events.forEach(function(event) {
+                  if (event.action === 'stop_audio') {
+                    window.stopAudio();
+                    if (playBtn) playBtn.style.display = '';
+                    if (stopBtn) stopBtn.style.display = 'none';
+                  }
+                  if (event.action === 'show_hide_element') {
+                    handleShowHide(event);
+                  }
+                });
+              }
+            }
+          }, true);
+        }
+      }
+      
+      // Setup audio buttons when DOM is ready
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', setupAudioButtons);
+      } else {
+        setupAudioButtons();
+      }
+      
+      // Also setup after delays
+      setTimeout(setupAudioButtons, 100);
+      setTimeout(setupAudioButtons, 500);
+      setTimeout(setupAudioButtons, 1000);
+      
+      window.addEventListener('load', function() {
+        setTimeout(setupAudioButtons, 100);
+      });
     </script>
 </body>
 
