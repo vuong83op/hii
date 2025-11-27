@@ -241,25 +241,231 @@
     display: none !important;
   }
   
-  /* Ensure audio buttons are visible */
-  #w-f0fwyhbu,
-  #w-17tsexjy,
-  #w-m1l6yd27 {
+  /* CRITICAL: Ensure audio buttons are ALWAYS visible - OVERRIDE ALL OTHER CSS */
+  /* Hide default button completely */
+  #w-f0fwyhbu {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+    position: fixed !important;
+    left: -9999px !important;
+  }
+  
+  /* Play button - ALWAYS VISIBLE at bottom left */
+  #w-17tsexjy {
     display: block !important;
     visibility: visible !important;
     opacity: 1 !important;
-    z-index: 9999 !important;
+    position: fixed !important;
+    width: 50px !important;
+    height: 50px !important;
+    left: 20px !important;
+    bottom: 20px !important;
+    z-index: 999999 !important;
     cursor: pointer !important;
     pointer-events: auto !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    transform: none !important;
+    top: auto !important;
+    right: auto !important;
   }
   
-  /* Hide stop button initially, show play button */
+  /* Stop button - hidden initially but positioned correctly */
   #w-m1l6yd27 {
     display: none !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    position: fixed !important;
+    width: 50px !important;
+    height: 50px !important;
+    left: 20px !important;
+    bottom: 20px !important;
+    z-index: 999999 !important;
+    cursor: pointer !important;
+    pointer-events: auto !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    transform: none !important;
+    top: auto !important;
+    right: auto !important;
   }
   
-  #w-17tsexjy {
+  /* Override any child element styles to ensure clickability */
+  #w-17tsexjy .image-block-css,
+  #w-17tsexjy .image-background,
+  #w-m1l6yd27 .image-block-css,
+  #w-m1l6yd27 .image-background {
+    pointer-events: auto !important;
+    cursor: pointer !important;
+    width: 50px !important;
+    height: 50px !important;
+  }
+  
+  /* Mobile audio button positioning - override inline styles */
+  @media screen and (max-width: 767px) {
+    #w-17tsexjy,
+    #w-m1l6yd27 {
+      position: fixed !important;
+      left: 20px !important;
+      bottom: 20px !important;
+      width: 50px !important;
+      height: 50px !important;
+      z-index: 99999 !important;
+      display: block !important;
+      visibility: visible !important;
+      opacity: 1 !important;
+      pointer-events: auto !important;
+      cursor: pointer !important;
+    }
+    
+    #w-m1l6yd27 {
+      display: none !important;
+    }
+    
+    #w-17tsexjy {
+      display: block !important;
+      visibility: visible !important;
+      opacity: 1 !important;
+    }
+    
+    /* Override inline calc positioning */
+    #w-f0fwyhbu {
+      display: none !important;
+      visibility: hidden !important;
+    }
+  }
+  
+  /* Desktop audio button positioning */
+  @media screen and (min-width: 768px) {
+    #w-17tsexjy,
+    #w-m1l6yd27 {
+      position: fixed !important;
+      left: 20px !important;
+      bottom: 20px !important;
+      width: 50px !important;
+      height: 50px !important;
+      z-index: 99999 !important;
+      display: block !important;
+      visibility: visible !important;
+      opacity: 1 !important;
+      pointer-events: auto !important;
+      cursor: pointer !important;
+    }
+    
+    #w-m1l6yd27 {
+      display: none !important;
+    }
+    
+    #w-17tsexjy {
+      display: block !important;
+      visibility: visible !important;
+      opacity: 1 !important;
+    }
+    
+    /* Override inline calc positioning */
+    #w-f0fwyhbu {
+      display: none !important;
+      visibility: hidden !important;
+    }
+  }
+</style>
+
+<!-- CRITICAL: Final override to ensure audio button is always visible - MUST BE LAST -->
+<style>
+  /* ABSOLUTE OVERRIDE - Highest priority to force audio button visibility */
+  html body #w-17tsexjy {
     display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    position: fixed !important;
+    width: 50px !important;
+    height: 50px !important;
+    left: 20px !important;
+    bottom: 20px !important;
+    z-index: 999999 !important;
+    cursor: pointer !important;
+    pointer-events: auto !important;
+    top: auto !important;
+    right: auto !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    transform: none !important;
+    background: transparent !important;
+  }
+  
+  html body #w-m1l6yd27 {
+    display: none !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    position: fixed !important;
+    width: 50px !important;
+    height: 50px !important;
+    left: 20px !important;
+    bottom: 20px !important;
+    z-index: 999999 !important;
+    cursor: pointer !important;
+    pointer-events: auto !important;
+    top: auto !important;
+    right: auto !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    transform: none !important;
+    background: transparent !important;
+  }
+  
+  html body #w-f0fwyhbu {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+    position: fixed !important;
+    left: -9999px !important;
+  }
+  
+  /* Mobile override - override calc() positioning */
+  @media screen and (max-width: 767px) {
+    html body #w-17tsexjy {
+      left: 20px !important;
+      bottom: 20px !important;
+      display: block !important;
+      visibility: visible !important;
+      opacity: 1 !important;
+      position: fixed !important;
+    }
+    html body #w-m1l6yd27 {
+      left: 20px !important;
+      bottom: 20px !important;
+      display: none !important;
+      position: fixed !important;
+    }
+    html body #w-f0fwyhbu {
+      display: none !important;
+      visibility: hidden !important;
+    }
+  }
+  
+  /* Desktop override - override calc() positioning */
+  @media screen and (min-width: 768px) {
+    html body #w-17tsexjy {
+      left: 20px !important;
+      bottom: 20px !important;
+      display: block !important;
+      visibility: visible !important;
+      opacity: 1 !important;
+      position: fixed !important;
+    }
+    html body #w-m1l6yd27 {
+      left: 20px !important;
+      bottom: 20px !important;
+      display: none !important;
+      position: fixed !important;
+    }
+    html body #w-f0fwyhbu {
+      display: none !important;
+      visibility: hidden !important;
+    }
   }
 </style>
 
@@ -825,19 +1031,57 @@
       function ensureAudioButtonsVisible() {
         const playBtn = document.getElementById('w-17tsexjy');
         const stopBtn = document.getElementById('w-m1l6yd27');
+        const defaultBtn = document.getElementById('w-f0fwyhbu');
         
-        if (playBtn) {
-          playBtn.style.display = '';
-          playBtn.style.visibility = 'visible';
-          playBtn.style.opacity = '1';
-          playBtn.style.zIndex = '9999';
-          playBtn.style.cursor = 'pointer';
-          playBtn.style.pointerEvents = 'auto';
+        // Hide default button
+        if (defaultBtn) {
+          defaultBtn.style.setProperty('display', 'none', 'important');
+          defaultBtn.style.setProperty('visibility', 'hidden', 'important');
         }
         
-        // Stop button should be hidden initially
+        if (playBtn) {
+          // Remove any calc() or complex positioning
+          playBtn.style.removeProperty('left');
+          playBtn.style.setProperty('display', 'block', 'important');
+          playBtn.style.setProperty('visibility', 'visible', 'important');
+          playBtn.style.setProperty('opacity', '1', 'important');
+          playBtn.style.setProperty('z-index', '999999', 'important');
+          playBtn.style.setProperty('cursor', 'pointer', 'important');
+          playBtn.style.setProperty('pointer-events', 'auto', 'important');
+          playBtn.style.setProperty('position', 'fixed', 'important');
+          playBtn.style.setProperty('left', '20px', 'important');
+          playBtn.style.setProperty('bottom', '20px', 'important');
+          playBtn.style.setProperty('width', '50px', 'important');
+          playBtn.style.setProperty('height', '50px', 'important');
+          playBtn.style.setProperty('top', 'auto', 'important');
+          playBtn.style.setProperty('right', 'auto', 'important');
+          playBtn.style.setProperty('margin', '0', 'important');
+          playBtn.style.setProperty('padding', '0', 'important');
+          // Force inline style
+          playBtn.setAttribute('style', playBtn.getAttribute('style') + '; left: 20px !important; bottom: 20px !important; position: fixed !important; display: block !important; visibility: visible !important; z-index: 999999 !important;');
+        }
+        
+        // Stop button should be hidden initially, but positioned correctly
         if (stopBtn) {
-          stopBtn.style.display = 'none';
+          // Remove any calc() or complex positioning
+          stopBtn.style.removeProperty('left');
+          stopBtn.style.setProperty('display', 'none', 'important');
+          stopBtn.style.setProperty('visibility', 'visible', 'important');
+          stopBtn.style.setProperty('opacity', '1', 'important');
+          stopBtn.style.setProperty('z-index', '999999', 'important');
+          stopBtn.style.setProperty('cursor', 'pointer', 'important');
+          stopBtn.style.setProperty('pointer-events', 'auto', 'important');
+          stopBtn.style.setProperty('position', 'fixed', 'important');
+          stopBtn.style.setProperty('left', '20px', 'important');
+          stopBtn.style.setProperty('bottom', '20px', 'important');
+          stopBtn.style.setProperty('width', '50px', 'important');
+          stopBtn.style.setProperty('height', '50px', 'important');
+          stopBtn.style.setProperty('top', 'auto', 'important');
+          stopBtn.style.setProperty('right', 'auto', 'important');
+          stopBtn.style.setProperty('margin', '0', 'important');
+          stopBtn.style.setProperty('padding', '0', 'important');
+          // Force inline style for when it becomes visible
+          stopBtn.setAttribute('style', stopBtn.getAttribute('style') + '; left: 20px !important; bottom: 20px !important; position: fixed !important; visibility: visible !important; z-index: 999999 !important;');
         }
       }
       
@@ -877,6 +1121,54 @@
       
       // Keep checking and ensuring buttons are visible
       setInterval(ensureAudioButtonsVisible, 1000);
+      
+      // Add a style element directly to head for maximum priority
+      function injectAudioButtonStyles() {
+        const styleId = 'audio-button-force-styles';
+        if (document.getElementById(styleId)) return;
+        
+        const style = document.createElement('style');
+        style.id = styleId;
+        style.textContent = `
+          #w-17tsexjy {
+            display: block !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+            position: fixed !important;
+            left: 20px !important;
+            bottom: 20px !important;
+            width: 50px !important;
+            height: 50px !important;
+            z-index: 999999 !important;
+            cursor: pointer !important;
+            pointer-events: auto !important;
+          }
+          #w-m1l6yd27 {
+            display: none !important;
+            position: fixed !important;
+            left: 20px !important;
+            bottom: 20px !important;
+            width: 50px !important;
+            height: 50px !important;
+            z-index: 999999 !important;
+          }
+          #w-f0fwyhbu {
+            display: none !important;
+            visibility: hidden !important;
+          }
+        `;
+        document.head.appendChild(style);
+      }
+      
+      // Inject styles immediately and on load
+      injectAudioButtonStyles();
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', injectAudioButtonStyles);
+      }
+      window.addEventListener('load', injectAudioButtonStyles);
+      setTimeout(injectAudioButtonStyles, 100);
+      setTimeout(injectAudioButtonStyles, 500);
+      setTimeout(injectAudioButtonStyles, 1000);
     </script>
 </body>
 
