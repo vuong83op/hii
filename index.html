@@ -921,19 +921,65 @@
             console.log('Audio URL:', audioUrl);
           });
           
-          audioPlayer.addEventListener('canplay', function() {
-            audioPlayer.play().catch(function(err) {
-              console.log('Audio play failed:', err);
-              // This is normal - browser requires user interaction
-            });
+          // Update button state when audio starts playing
+          const updateButtonState = function() {
+            const playBtn = document.getElementById('custom-audio-play-btn');
+            const stopBtn = document.getElementById('custom-audio-stop-btn');
+            if (playBtn) {
+              playBtn.style.display = 'none';
+            }
+            if (stopBtn) {
+              stopBtn.style.display = 'flex';
+            }
+          };
+          
+          // Set up load event to ensure audio is ready
+          audioPlayer.addEventListener('loadeddata', function() {
+            // When audio is loaded, try to play
+            const playPromise = audioPlayer.play();
+            if (playPromise !== undefined) {
+              playPromise.then(function() {
+                console.log('Audio playing successfully');
+                updateButtonState();
+              }).catch(function(err) {
+                console.log('Audio play failed after load:', err);
+              });
+            }
           });
           
-          // Try to play immediately (may fail if no user interaction)
-          audioPlayer.play().catch(function(err) {
-            console.log('Audio play immediate failed (this is normal):', err);
-            // Load the audio even if play fails
-            audioPlayer.load();
+          // Also try on canplay event as backup
+          audioPlayer.addEventListener('canplay', function() {
+            if (audioPlayer.paused) {
+              const playPromise = audioPlayer.play();
+              if (playPromise !== undefined) {
+                playPromise.then(function() {
+                  updateButtonState();
+                }).catch(function(err) {
+                  console.log('Audio play failed on canplay:', err);
+                });
+              }
+            }
           });
+          
+          // Listen for play event
+          audioPlayer.addEventListener('play', function() {
+            console.log('Audio started playing');
+            updateButtonState();
+          });
+          
+          // Load the audio first
+          audioPlayer.load();
+          
+          // Try to play immediately (should work with user interaction)
+          const playPromise = audioPlayer.play();
+          if (playPromise !== undefined) {
+            playPromise.then(function() {
+              console.log('Audio playing immediately');
+              updateButtonState();
+            }).catch(function(err) {
+              console.log('Audio play immediate failed, will retry after load:', err);
+            });
+          }
           
         } catch(err) {
           console.log('Audio creation failed:', err);
@@ -946,6 +992,16 @@
           audioPlayer.pause();
           audioPlayer.currentTime = 0;
           audioPlayer = null;
+          console.log('Audio stopped');
+        }
+        // Ensure buttons are in correct state
+        const playBtn = document.getElementById('custom-audio-play-btn');
+        const stopBtn = document.getElementById('custom-audio-stop-btn');
+        if (playBtn) {
+          playBtn.style.display = 'flex';
+        }
+        if (stopBtn) {
+          stopBtn.style.display = 'none';
         }
       };
       
@@ -1281,9 +1337,12 @@
         // Setup play button
         if (playBtn && !playBtn.dataset.setup) {
           playBtn.dataset.setup = 'true';
-          playBtn.addEventListener('click', function(e) {
+          
+          const playButtonClickHandler = function(e) {
             e.preventDefault();
             e.stopPropagation();
+            e.stopImmediatePropagation();
+            console.log('Play button clicked - playing audio');
             // Get audio URL
             let urlToPlay = audioUrl;
             if (!urlToPlay && window.event_data && window.event_data.runtime && window.event_data.runtime.vm) {
@@ -1299,12 +1358,33 @@
             if (!urlToPlay) {
               urlToPlay = 'https://statics.pancake.vn/web-media/30/2d/16/de/6ef7c8fcf6b86241ef11f111d6d3269a74a27c5ab5a451854d150895-w:0-h:0-l:2426583-t:audio/mpeg.mp3';
             }
+            console.log('Playing audio from URL:', urlToPlay);
             if (window.playAudio) {
               window.playAudio(urlToPlay);
+              // Update button visibility
+              playBtn.style.display = 'none';
+              if (stopBtn) {
+                stopBtn.style.display = 'flex';
+              }
+            } else {
+              console.error('playAudio function not found!');
             }
-            playBtn.style.display = 'none';
-            stopBtn.style.display = 'flex';
-          });
+          };
+          
+          playBtn.addEventListener('click', playButtonClickHandler, { capture: true, passive: false });
+          
+          // Also add mousedown event as backup
+          playBtn.addEventListener('mousedown', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+          }, { capture: true });
+          
+          // Touch events for mobile
+          playBtn.addEventListener('touchend', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            playButtonClickHandler(e);
+          }, { capture: true, passive: false });
         }
         
         // Setup stop button
@@ -1313,12 +1393,45 @@
           stopBtn.addEventListener('click', function(e) {
             e.preventDefault();
             e.stopPropagation();
+            e.stopImmediatePropagation();
+            console.log('Stop button clicked - stopping audio');
+            if (window.stopAudio) {
+              window.stopAudio();
+            } else {
+              console.error('stopAudio function not found!');
+              // Fallback: manually stop audio
+              if (window.audioPlayer) {
+                window.audioPlayer.pause();
+                window.audioPlayer.currentTime = 0;
+                window.audioPlayer = null;
+              }
+            }
+            // Always update button visibility
+            stopBtn.style.display = 'none';
+            if (playBtn) {
+              playBtn.style.display = 'flex';
+            }
+          }, { capture: true, passive: false });
+          
+          // Also add mousedown event as backup
+          stopBtn.addEventListener('mousedown', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+          }, { capture: true });
+          
+          // Touch events for mobile
+          stopBtn.addEventListener('touchend', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            console.log('Stop button touched - stopping audio');
             if (window.stopAudio) {
               window.stopAudio();
             }
             stopBtn.style.display = 'none';
-            playBtn.style.display = 'flex';
-          });
+            if (playBtn) {
+              playBtn.style.display = 'flex';
+            }
+          }, { capture: true, passive: false });
         }
         
         // Ensure buttons are visible
