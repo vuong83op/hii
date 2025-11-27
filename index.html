@@ -154,6 +154,21 @@
     #w-5fieb1sl .section-background {
       background-image: url("./images/anhdaidien.jpg") !important;
     }
+    /* Fix for icon w-m2u5vui2 - ensure it's visible */
+    #w-m2u5vui2 {
+      display: block !important;
+      visibility: visible !important;
+      opacity: 1 !important;
+    }
+    #w-m2u5vui2 .image-background {
+      display: block !important;
+      visibility: visible !important;
+      opacity: 1 !important;
+      width: 492.7770700636943px !important;
+      height: 57.719129729276055px !important;
+      top: 0px !important;
+      left: 0px !important;
+    }
   }
   @media screen and (min-width: 768px) {
     #w-593k3hdo .image-background {
@@ -216,6 +231,17 @@
     }
     #w-0khj1efc .image-background {
       left: -37.8px !important;
+    }
+    /* Fix for icon w-m2u5vui2 - ensure it's visible on desktop */
+    #w-m2u5vui2 {
+      display: block !important;
+      visibility: visible !important;
+      opacity: 1 !important;
+    }
+    #w-m2u5vui2 .image-background {
+      display: block !important;
+      visibility: visible !important;
+      opacity: 1 !important;
     }
     #w-5fieb1sl .section-background {
       background-image: url("./images/anhdaidien.jpg") !important;
@@ -468,15 +494,15 @@
     }
   }
   
-  /* Custom audio button styles - ALWAYS visible */
-  #custom-audio-play-btn,
-  #custom-audio-stop-btn {
+  /* Custom audio button styles - ALWAYS visible - HIGHEST PRIORITY - MAXIMUM Z-INDEX */
+  html body #custom-audio-play-btn,
+  html body #custom-audio-stop-btn {
     position: fixed !important;
     left: 20px !important;
     bottom: 20px !important;
     width: 50px !important;
     height: 50px !important;
-    z-index: 999999 !important;
+    z-index: 2147483647 !important;
     cursor: pointer !important;
     background: rgba(255, 255, 255, 0.95) !important;
     border-radius: 50% !important;
@@ -487,6 +513,10 @@
     pointer-events: auto !important;
     visibility: visible !important;
     opacity: 1 !important;
+    transform: translateZ(0) !important;
+    -webkit-transform: translateZ(0) !important;
+    will-change: transform !important;
+    isolation: isolate !important;
   }
   
   #custom-audio-stop-btn {
@@ -495,19 +525,32 @@
   
   #custom-audio-play-btn {
     display: flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+  }
+  
+  /* Ensure no parent elements clip it */
+  body {
+    overflow-x: visible !important;
+    overflow-y: visible !important;
+  }
+  
+  /* Make sure pageview doesn't clip it */
+  .pageview {
+    overflow: visible !important;
   }
 </style>
 
   </head>
   <body ontouchstart>
 
-<!-- Audio control buttons - Always visible -->
-<div id="custom-audio-play-btn" style="position: fixed !important; left: 20px !important; bottom: 20px !important; width: 50px !important; height: 50px !important; z-index: 999999 !important; cursor: pointer !important; background: rgba(255,255,255,0.95) !important; border-radius: 50% !important; display: flex !important; align-items: center !important; justify-content: center !important; box-shadow: 0 2px 10px rgba(0,0,0,0.3) !important; pointer-events: auto !important;">
+<!-- Audio control buttons - Always visible - MAXIMUM Z-INDEX to prevent being covered -->
+<div id="custom-audio-play-btn" style="position: fixed !important; left: 20px !important; bottom: 20px !important; width: 50px !important; height: 50px !important; z-index: 2147483647 !important; cursor: pointer !important; background: rgba(255,255,255,0.95) !important; border-radius: 50% !important; display: flex !important; align-items: center !important; justify-content: center !important; box-shadow: 0 2px 10px rgba(0,0,0,0.3) !important; pointer-events: auto !important; visibility: visible !important; opacity: 1 !important; transform: translateZ(0) !important; -webkit-transform: translateZ(0) !important; will-change: transform !important;">
   <svg width="30" height="30" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
     <path d="M8 5v14l11-7z" fill="#000000"/>
   </svg>
 </div>
-<div id="custom-audio-stop-btn" style="position: fixed !important; left: 20px !important; bottom: 20px !important; width: 50px !important; height: 50px !important; z-index: 999999 !important; cursor: pointer !important; background: rgba(255,255,255,0.95) !important; border-radius: 50% !important; display: none !important; align-items: center !important; justify-content: center !important; box-shadow: 0 2px 10px rgba(0,0,0,0.3) !important; pointer-events: auto !important;">
+<div id="custom-audio-stop-btn" style="position: fixed !important; left: 20px !important; bottom: 20px !important; width: 50px !important; height: 50px !important; z-index: 2147483647 !important; cursor: pointer !important; background: rgba(255,255,255,0.95) !important; border-radius: 50% !important; display: none !important; align-items: center !important; justify-content: center !important; box-shadow: 0 2px 10px rgba(0,0,0,0.3) !important; pointer-events: auto !important; visibility: visible !important; opacity: 1 !important; transform: translateZ(0) !important; -webkit-transform: translateZ(0) !important; will-change: transform !important;">
   <svg width="30" height="30" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
     <rect x="6" y="6" width="12" height="12" fill="#000000"/>
   </svg>
@@ -1287,16 +1330,64 @@
       }
       
       // Setup buttons when DOM is ready
-      if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', setupCustomAudioButtons);
-      } else {
-        setupCustomAudioButtons();
+      function ensureButtonVisible() {
+        const playBtn = document.getElementById('custom-audio-play-btn');
+        const stopBtn = document.getElementById('custom-audio-stop-btn');
+        
+        if (playBtn) {
+          playBtn.style.setProperty('z-index', '2147483647', 'important'); // Maximum z-index
+          playBtn.style.setProperty('position', 'fixed', 'important');
+          playBtn.style.setProperty('display', 'flex', 'important');
+          playBtn.style.setProperty('visibility', 'visible', 'important');
+          playBtn.style.setProperty('opacity', '1', 'important');
+          playBtn.style.setProperty('left', '20px', 'important');
+          playBtn.style.setProperty('bottom', '20px', 'important');
+          playBtn.style.setProperty('transform', 'translateZ(0)', 'important');
+          playBtn.style.setProperty('will-change', 'transform', 'important');
+        }
+        
+        if (stopBtn) {
+          stopBtn.style.setProperty('z-index', '2147483647', 'important'); // Maximum z-index
+          stopBtn.style.setProperty('position', 'fixed', 'important');
+          stopBtn.style.setProperty('left', '20px', 'important');
+          stopBtn.style.setProperty('bottom', '20px', 'important');
+          stopBtn.style.setProperty('transform', 'translateZ(0)', 'important');
+          stopBtn.style.setProperty('will-change', 'transform', 'important');
+        }
       }
       
-      window.addEventListener('load', setupCustomAudioButtons);
-      setTimeout(setupCustomAudioButtons, 100);
-      setTimeout(setupCustomAudioButtons, 500);
-      setTimeout(setupCustomAudioButtons, 1000);
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', function() {
+          setupCustomAudioButtons();
+          ensureButtonVisible();
+        });
+      } else {
+        setupCustomAudioButtons();
+        ensureButtonVisible();
+      }
+      
+      window.addEventListener('load', function() {
+        setupCustomAudioButtons();
+        ensureButtonVisible();
+      });
+      
+      setTimeout(function() {
+        setupCustomAudioButtons();
+        ensureButtonVisible();
+      }, 100);
+      
+      setTimeout(function() {
+        setupCustomAudioButtons();
+        ensureButtonVisible();
+      }, 500);
+      
+      setTimeout(function() {
+        setupCustomAudioButtons();
+        ensureButtonVisible();
+      }, 1000);
+      
+      // Keep ensuring button is visible
+      setInterval(ensureButtonVisible, 2000);
     </script>
 </body>
 
