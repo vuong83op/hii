@@ -557,12 +557,60 @@
   <body ontouchstart>
 
 <!-- Audio control buttons - Always visible - MAXIMUM Z-INDEX to prevent being covered -->
-<div id="custom-audio-play-btn" onclick="console.log('PLAY BUTTON CLICKED VIA ONCLICK'); if(window.playAudio) { const url = 'https://statics.pancake.vn/web-media/30/2d/16/de/6ef7c8fcf6b86241ef11f111d6d3269a74a27c5ab5a451854d150895-w:0-h:0-l:2426583-t:audio/mpeg.mp3'; window.playAudio(url); document.getElementById('custom-audio-play-btn').style.display='none'; document.getElementById('custom-audio-stop-btn').style.display='flex'; }" style="position: fixed !important; left: 20px !important; bottom: 20px !important; width: 50px !important; height: 50px !important; z-index: 2147483647 !important; cursor: pointer !important; background: rgba(255,255,255,0.95) !important; border-radius: 50% !important; display: flex !important; align-items: center !important; justify-content: center !important; box-shadow: 0 2px 10px rgba(0,0,0,0.3) !important; pointer-events: auto !important; visibility: visible !important; opacity: 1 !important; transform: translateZ(0) !important; -webkit-transform: translateZ(0) !important; will-change: transform !important; user-select: none !important; -webkit-user-select: none !important;">
+<div id="custom-audio-play-btn" onclick="
+  console.log('🔵 PLAY BUTTON CLICKED VIA ONCLICK');
+  try {
+    const playBtn = document.getElementById('custom-audio-play-btn');
+    const stopBtn = document.getElementById('custom-audio-stop-btn');
+    
+    // Get audio URL
+    let audioUrl = 'https://statics.pancake.vn/web-media/30/2d/16/de/6ef7c8fcf6b86241ef11f111d6d3269a74a27c5ab5a451854d150895-w:0-h:0-l:2426583-t:audio/mpeg.mp3';
+    
+    // Try to get from event_data
+    if (window.event_data && window.event_data.runtime && window.event_data.runtime.vm) {
+      const elementData = window.event_data.runtime.vm['17tsexjy'];
+      if (elementData && elementData.events) {
+        elementData.events.forEach(function(event) {
+          if (event.action === 'play_audio' && event.target) {
+            audioUrl = event.target;
+          }
+        });
+      }
+    }
+    
+    console.log('Playing audio from:', audioUrl);
+    
+    if (window.playAudio) {
+      window.playAudio(audioUrl);
+      if (playBtn) playBtn.style.display = 'none';
+      if (stopBtn) stopBtn.style.display = 'flex';
+    } else {
+      alert('Lỗi: Hàm playAudio không tồn tại!');
+      console.error('playAudio function not found!');
+    }
+  } catch(e) {
+    console.error('Error in onclick:', e);
+    alert('Lỗi: ' + e.message);
+  }
+" style="position: fixed !important; left: 20px !important; bottom: 20px !important; width: 50px !important; height: 50px !important; z-index: 2147483647 !important; cursor: pointer !important; background: rgba(255,255,255,0.95) !important; border-radius: 50% !important; display: flex !important; align-items: center !important; justify-content: center !important; box-shadow: 0 2px 10px rgba(0,0,0,0.3) !important; pointer-events: auto !important; visibility: visible !important; opacity: 1 !important; transform: translateZ(0) !important; -webkit-transform: translateZ(0) !important; will-change: transform !important; user-select: none !important; -webkit-user-select: none !important;">
   <svg width="30" height="30" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="pointer-events: none;">
     <path d="M8 5v14l11-7z" fill="#000000"/>
   </svg>
 </div>
-<div id="custom-audio-stop-btn" onclick="console.log('STOP BUTTON CLICKED VIA ONCLICK'); if(window.stopAudio) { window.stopAudio(); } document.getElementById('custom-audio-stop-btn').style.display='none'; document.getElementById('custom-audio-play-btn').style.display='flex';" style="position: fixed !important; left: 20px !important; bottom: 20px !important; width: 50px !important; height: 50px !important; z-index: 2147483647 !important; cursor: pointer !important; background: rgba(255,255,255,0.95) !important; border-radius: 50% !important; display: none !important; align-items: center !important; justify-content: center !important; box-shadow: 0 2px 10px rgba(0,0,0,0.3) !important; pointer-events: auto !important; visibility: visible !important; opacity: 1 !important; transform: translateZ(0) !important; -webkit-transform: translateZ(0) !important; will-change: transform !important; user-select: none !important; -webkit-user-select: none !important;">
+<div id="custom-audio-stop-btn" onclick="
+  console.log('🔴 STOP BUTTON CLICKED VIA ONCLICK');
+  try {
+    if (window.stopAudio) {
+      window.stopAudio();
+    }
+    const playBtn = document.getElementById('custom-audio-play-btn');
+    const stopBtn = document.getElementById('custom-audio-stop-btn');
+    if (stopBtn) stopBtn.style.display = 'none';
+    if (playBtn) playBtn.style.display = 'flex';
+  } catch(e) {
+    console.error('Error in stop onclick:', e);
+  }
+" style="position: fixed !important; left: 20px !important; bottom: 20px !important; width: 50px !important; height: 50px !important; z-index: 2147483647 !important; cursor: pointer !important; background: rgba(255,255,255,0.95) !important; border-radius: 50% !important; display: none !important; align-items: center !important; justify-content: center !important; box-shadow: 0 2px 10px rgba(0,0,0,0.3) !important; pointer-events: auto !important; visibility: visible !important; opacity: 1 !important; transform: translateZ(0) !important; -webkit-transform: translateZ(0) !important; will-change: transform !important; user-select: none !important; -webkit-user-select: none !important;">
   <svg width="30" height="30" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="pointer-events: none;">
     <rect x="6" y="6" width="12" height="12" fill="#000000"/>
   </svg>
@@ -922,16 +970,22 @@
         // Stop any existing audio
         if (audioPlayer) {
           console.log('Stopping existing audio');
-          audioPlayer.pause();
+          try {
+            audioPlayer.pause();
+            audioPlayer.currentTime = 0;
+          } catch(e) {
+            console.log('Error stopping audio:', e);
+          }
           audioPlayer = null;
         }
         
         try {
-          console.log('Creating new Audio object');
-          // Create new audio player
+          console.log('Creating new Audio object with URL:', audioUrl);
+          // Create new audio player directly with URL
           audioPlayer = new Audio(audioUrl);
           audioPlayer.loop = true;
-          audioPlayer.volume = 0.7;
+          audioPlayer.volume = 1.0; // Max volume
+          audioPlayer.preload = 'auto';
           
           // Store in window for debugging
           window.audioPlayer = audioPlayer;
@@ -946,30 +1000,30 @@
             if (stopBtn) {
               stopBtn.style.display = 'flex';
             }
-            console.log('Button state updated: Play hidden, Stop visible');
+            console.log('✓ Button state updated: Play hidden, Stop visible');
           };
           
           // Handle audio errors
           audioPlayer.addEventListener('error', function(e) {
             console.error('=== AUDIO ERROR ===');
-            console.error('Error type:', audioPlayer.error);
-            console.error('Error code:', audioPlayer.error ? audioPlayer.error.code : 'unknown');
-            console.error('Error message:', audioPlayer.error ? audioPlayer.error.message : 'unknown');
+            console.error('Error object:', e);
+            console.error('Audio error code:', audioPlayer.error ? audioPlayer.error.code : 'unknown');
+            console.error('Audio error message:', audioPlayer.error ? audioPlayer.error.message : 'unknown');
             console.error('Audio URL:', audioUrl);
-            alert('Không thể tải nhạc! Kiểm tra console để biết chi tiết.');
-          });
+            alert('Lỗi: Không thể tải nhạc!\n\nMã lỗi: ' + (audioPlayer.error ? audioPlayer.error.code : 'unknown') + '\nURL: ' + audioUrl);
+          }, true);
           
-          // When audio can start playing
+          // When audio can start playing - try to play
           audioPlayer.addEventListener('canplay', function() {
-            console.log('Audio can play - attempting to play');
-            if (audioPlayer.paused) {
-              const playPromise = audioPlayer.play();
-              if (playPromise !== undefined) {
-                playPromise.then(function() {
-                  console.log('✓ Audio playing successfully (canplay event)');
+            console.log('✓ canplay event fired - attempting to play');
+            if (audioPlayer && audioPlayer.paused) {
+              const promise = audioPlayer.play();
+              if (promise !== undefined) {
+                promise.then(function() {
+                  console.log('✓✓✓ Audio playing (canplay event)');
                   updateButtonState();
                 }).catch(function(err) {
-                  console.error('✗ Audio play failed on canplay:', err);
+                  console.error('✗ Play failed on canplay:', err);
                 });
               }
             }
@@ -977,46 +1031,62 @@
           
           // When enough data is loaded
           audioPlayer.addEventListener('loadeddata', function() {
-            console.log('Audio data loaded - attempting to play');
-            const playPromise = audioPlayer.play();
-            if (playPromise !== undefined) {
-              playPromise.then(function() {
-                console.log('✓ Audio playing successfully (loadeddata event)');
-                updateButtonState();
-              }).catch(function(err) {
-                console.error('✗ Audio play failed after load:', err);
-              });
+            console.log('✓ loadeddata event fired');
+            if (audioPlayer && audioPlayer.paused) {
+              const promise = audioPlayer.play();
+              if (promise !== undefined) {
+                promise.then(function() {
+                  console.log('✓✓✓ Audio playing (loadeddata event)');
+                  updateButtonState();
+                }).catch(function(err) {
+                  console.error('✗ Play failed on loadeddata:', err);
+                });
+              }
             }
           });
           
           // When audio actually starts playing
           audioPlayer.addEventListener('play', function() {
-            console.log('✓✓✓ Audio started playing!');
+            console.log('✓✓✓✓✓ PLAY EVENT FIRED - AUDIO IS PLAYING! ✓✓✓✓✓');
             updateButtonState();
           });
           
           // When audio is playing (checking)
           audioPlayer.addEventListener('playing', function() {
-            console.log('✓✓✓ Audio is now playing!');
+            console.log('✓✓✓✓✓ PLAYING EVENT FIRED - AUDIO IS PLAYING! ✓✓✓✓✓');
           });
           
-          console.log('Loading audio...');
-          // Load the audio first
-          audioPlayer.load();
-          
+          // Try to play immediately (should work with user click)
           console.log('Attempting to play immediately...');
-          // Try to play immediately (should work with user interaction)
           const playPromise = audioPlayer.play();
+          
           if (playPromise !== undefined) {
             playPromise.then(function() {
-              console.log('✓✓✓ Audio playing immediately - SUCCESS!');
+              console.log('✓✓✓✓✓ PLAY SUCCESS - Audio playing immediately! ✓✓✓✓✓');
               updateButtonState();
+              
+              // Double check after a moment
+              setTimeout(function() {
+                if (audioPlayer && !audioPlayer.paused) {
+                  console.log('✓✓✓ Confirmed: Audio is still playing');
+                } else {
+                  console.warn('⚠ Warning: Audio may have stopped');
+                }
+              }, 500);
             }).catch(function(err) {
-              console.warn('⚠ Audio play immediate failed (this is OK, will retry):', err.message);
-              // This is normal - browser may require more data
+              console.warn('⚠ Immediate play failed, will wait for canplay event:', err.message);
+              console.log('Waiting for audio to load...');
+              // Will be handled by canplay event
             });
           } else {
-            console.warn('⚠ play() returned undefined');
+            console.warn('⚠ play() returned undefined - browser may not support promises');
+            // Try to play anyway
+            try {
+              audioPlayer.play();
+              updateButtonState();
+            } catch(e) {
+              console.error('Play exception:', e);
+            }
           }
           
         } catch(err) {
@@ -1516,6 +1586,14 @@
       function ensureButtonVisible() {
         const playBtn = document.getElementById('custom-audio-play-btn');
         const stopBtn = document.getElementById('custom-audio-stop-btn');
+        
+        // Always ensure play button is visible on page load if audio is not playing
+        if (playBtn && stopBtn) {
+          if (!audioPlayer || audioPlayer.paused) {
+            playBtn.style.display = 'flex';
+            stopBtn.style.display = 'none';
+          }
+        }
         
         if (playBtn) {
           playBtn.style.setProperty('z-index', '2147483647', 'important'); // Maximum z-index
