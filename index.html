@@ -905,30 +905,33 @@
       let audioPlayer = null;
       
       window.playAudio = function(audioUrl) {
+        console.log('=== playAudio called ===');
+        console.log('Audio URL:', audioUrl);
+        
         if (!audioUrl) {
-          console.log('No audio URL provided');
+          console.error('No audio URL provided');
+          alert('Không tìm thấy link nhạc!');
           return;
         }
         
         // Stop any existing audio
         if (audioPlayer) {
+          console.log('Stopping existing audio');
           audioPlayer.pause();
           audioPlayer = null;
         }
         
         try {
+          console.log('Creating new Audio object');
           // Create new audio player
           audioPlayer = new Audio(audioUrl);
           audioPlayer.loop = true;
           audioPlayer.volume = 0.7;
           
-          // Handle audio events
-          audioPlayer.addEventListener('error', function(e) {
-            console.log('Audio error:', e);
-            console.log('Audio URL:', audioUrl);
-          });
+          // Store in window for debugging
+          window.audioPlayer = audioPlayer;
           
-          // Update button state when audio starts playing
+          // Update button state function
           const updateButtonState = function() {
             const playBtn = document.getElementById('custom-audio-play-btn');
             const stopBtn = document.getElementById('custom-audio-stop-btn');
@@ -938,59 +941,84 @@
             if (stopBtn) {
               stopBtn.style.display = 'flex';
             }
+            console.log('Button state updated: Play hidden, Stop visible');
           };
           
-          // Set up load event to ensure audio is ready
-          audioPlayer.addEventListener('loadeddata', function() {
-            // When audio is loaded, try to play
-            const playPromise = audioPlayer.play();
-            if (playPromise !== undefined) {
-              playPromise.then(function() {
-                console.log('Audio playing successfully');
-                updateButtonState();
-              }).catch(function(err) {
-                console.log('Audio play failed after load:', err);
-              });
-            }
+          // Handle audio errors
+          audioPlayer.addEventListener('error', function(e) {
+            console.error('=== AUDIO ERROR ===');
+            console.error('Error type:', audioPlayer.error);
+            console.error('Error code:', audioPlayer.error ? audioPlayer.error.code : 'unknown');
+            console.error('Error message:', audioPlayer.error ? audioPlayer.error.message : 'unknown');
+            console.error('Audio URL:', audioUrl);
+            alert('Không thể tải nhạc! Kiểm tra console để biết chi tiết.');
           });
           
-          // Also try on canplay event as backup
+          // When audio can start playing
           audioPlayer.addEventListener('canplay', function() {
+            console.log('Audio can play - attempting to play');
             if (audioPlayer.paused) {
               const playPromise = audioPlayer.play();
               if (playPromise !== undefined) {
                 playPromise.then(function() {
+                  console.log('✓ Audio playing successfully (canplay event)');
                   updateButtonState();
                 }).catch(function(err) {
-                  console.log('Audio play failed on canplay:', err);
+                  console.error('✗ Audio play failed on canplay:', err);
                 });
               }
             }
           });
           
-          // Listen for play event
+          // When enough data is loaded
+          audioPlayer.addEventListener('loadeddata', function() {
+            console.log('Audio data loaded - attempting to play');
+            const playPromise = audioPlayer.play();
+            if (playPromise !== undefined) {
+              playPromise.then(function() {
+                console.log('✓ Audio playing successfully (loadeddata event)');
+                updateButtonState();
+              }).catch(function(err) {
+                console.error('✗ Audio play failed after load:', err);
+              });
+            }
+          });
+          
+          // When audio actually starts playing
           audioPlayer.addEventListener('play', function() {
-            console.log('Audio started playing');
+            console.log('✓✓✓ Audio started playing!');
             updateButtonState();
           });
           
+          // When audio is playing (checking)
+          audioPlayer.addEventListener('playing', function() {
+            console.log('✓✓✓ Audio is now playing!');
+          });
+          
+          console.log('Loading audio...');
           // Load the audio first
           audioPlayer.load();
           
+          console.log('Attempting to play immediately...');
           // Try to play immediately (should work with user interaction)
           const playPromise = audioPlayer.play();
           if (playPromise !== undefined) {
             playPromise.then(function() {
-              console.log('Audio playing immediately');
+              console.log('✓✓✓ Audio playing immediately - SUCCESS!');
               updateButtonState();
             }).catch(function(err) {
-              console.log('Audio play immediate failed, will retry after load:', err);
+              console.warn('⚠ Audio play immediate failed (this is OK, will retry):', err.message);
+              // This is normal - browser may require more data
             });
+          } else {
+            console.warn('⚠ play() returned undefined');
           }
           
         } catch(err) {
-          console.log('Audio creation failed:', err);
-          console.log('Audio URL:', audioUrl);
+          console.error('=== EXCEPTION in playAudio ===');
+          console.error('Error:', err);
+          console.error('Audio URL:', audioUrl);
+          alert('Lỗi khi tạo audio player: ' + err.message);
         }
       };
       
@@ -1318,10 +1346,19 @@
       
       // Connect event handlers to the HTML audio buttons
       function setupCustomAudioButtons() {
+        console.log('=== setupCustomAudioButtons called ===');
         const playBtn = document.getElementById('custom-audio-play-btn');
         const stopBtn = document.getElementById('custom-audio-stop-btn');
         
-        if (!playBtn || !stopBtn) return;
+        console.log('Play button found:', !!playBtn);
+        console.log('Stop button found:', !!stopBtn);
+        
+        if (!playBtn || !stopBtn) {
+          console.error('Buttons not found! Play:', !!playBtn, 'Stop:', !!stopBtn);
+          return;
+        }
+        
+        console.log('Both buttons found, continuing setup...');
         
         // Get audio URL from event_data
         let audioUrl = null;
@@ -1346,39 +1383,53 @@
           playBtn.dataset.setup = 'true';
           
           const playButtonClickHandler = function(e) {
+            console.log('=== PLAY BUTTON CLICKED ===');
             e.preventDefault();
             e.stopPropagation();
             e.stopImmediatePropagation();
-            console.log('Play button clicked - playing audio');
+            
             // Get audio URL
             let urlToPlay = audioUrl;
+            console.log('Initial audioUrl:', urlToPlay);
+            
+            // Try to get from event_data
             if (!urlToPlay && window.event_data && window.event_data.runtime && window.event_data.runtime.vm) {
+              console.log('Checking event_data for audio URL...');
               const elementData = window.event_data.runtime.vm['17tsexjy'];
               if (elementData && elementData.events) {
                 elementData.events.forEach(function(event) {
                   if (event.action === 'play_audio' && event.target) {
                     urlToPlay = event.target;
+                    console.log('Found audio URL in event_data:', urlToPlay);
                   }
                 });
               }
             }
+            
+            // Use fallback URL
             if (!urlToPlay) {
               urlToPlay = 'https://statics.pancake.vn/web-media/30/2d/16/de/6ef7c8fcf6b86241ef11f111d6d3269a74a27c5ab5a451854d150895-w:0-h:0-l:2426583-t:audio/mpeg.mp3';
+              console.log('Using fallback audio URL:', urlToPlay);
             }
-            console.log('Playing audio from URL:', urlToPlay);
+            
+            console.log('Final URL to play:', urlToPlay);
+            
             if (window.playAudio) {
+              console.log('Calling window.playAudio...');
               window.playAudio(urlToPlay);
-              // Update button visibility
+              // Update button visibility immediately
               playBtn.style.display = 'none';
               if (stopBtn) {
                 stopBtn.style.display = 'flex';
               }
             } else {
-              console.error('playAudio function not found!');
+              console.error('✗✗✗ playAudio function NOT FOUND!');
+              alert('Lỗi: Không tìm thấy hàm playAudio!');
             }
           };
           
           playBtn.addEventListener('click', playButtonClickHandler, { capture: true, passive: false });
+          console.log('✓ Play button click listener added');
           
           // Also add mousedown event as backup
           playBtn.addEventListener('mousedown', function(e) {
@@ -1392,6 +1443,10 @@
             e.stopPropagation();
             playButtonClickHandler(e);
           }, { capture: true, passive: false });
+          
+          console.log('✓ Play button setup complete');
+        } else {
+          console.log('Play button already setup or not found');
         }
         
         // Setup stop button
@@ -1447,6 +1502,9 @@
         playBtn.style.opacity = '1';
         playBtn.style.zIndex = '999999';
         stopBtn.style.display = 'none';
+        
+        console.log('✓ Button visibility ensured');
+        console.log('=== setupCustomAudioButtons completed ===');
       }
       
       // Setup buttons when DOM is ready
@@ -1476,32 +1534,42 @@
         }
       }
       
+      console.log('=== Initializing audio buttons ===');
+      console.log('Document ready state:', document.readyState);
+      
       if (document.readyState === 'loading') {
+        console.log('Document loading, waiting for DOMContentLoaded...');
         document.addEventListener('DOMContentLoaded', function() {
+          console.log('DOMContentLoaded fired');
           setupCustomAudioButtons();
           ensureButtonVisible();
         });
       } else {
+        console.log('Document already loaded, setting up immediately');
         setupCustomAudioButtons();
         ensureButtonVisible();
       }
       
       window.addEventListener('load', function() {
+        console.log('Window load event fired');
         setupCustomAudioButtons();
         ensureButtonVisible();
       });
       
       setTimeout(function() {
+        console.log('Setup timeout 100ms');
         setupCustomAudioButtons();
         ensureButtonVisible();
       }, 100);
       
       setTimeout(function() {
+        console.log('Setup timeout 500ms');
         setupCustomAudioButtons();
         ensureButtonVisible();
       }, 500);
       
       setTimeout(function() {
+        console.log('Setup timeout 1000ms');
         setupCustomAudioButtons();
         ensureButtonVisible();
       }, 1000);
