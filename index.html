@@ -440,6 +440,137 @@
         }
       })()
     </script>
+
+    <script>
+      // Auto-add animation class to elements with is-animation class
+      function initAnimations() {
+        const animatedElements = document.querySelectorAll('.is-animation:not(.animation)');
+        animatedElements.forEach(function(el) {
+          el.classList.add('animation');
+        });
+      }
+      
+      // Initialize animations when DOM is ready
+      function runAnimationInit() {
+        // Add animation class immediately to visible elements
+        initAnimations();
+        
+        // Use IntersectionObserver for scroll-triggered animations
+        const observer = new IntersectionObserver(function(entries) {
+          entries.forEach(function(entry) {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('animation');
+              observer.unobserve(entry.target);
+            }
+          });
+        }, { threshold: 0.1, rootMargin: '50px' });
+        
+        // Observe all animation elements
+        document.querySelectorAll('.is-animation').forEach(function(el) {
+          if (!el.classList.contains('animation')) {
+            observer.observe(el);
+          }
+        });
+      }
+      
+      // Run immediately and also wait for DOM
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', runAnimationInit);
+      } else {
+        runAnimationInit();
+      }
+      
+      // Also run after a short delay to catch late-loaded elements
+      setTimeout(runAnimationInit, 500);
+      
+      // Also try after delays in case elements are added dynamically
+      setTimeout(initAnimations, 100);
+      setTimeout(initAnimations, 500);
+      setTimeout(initAnimations, 1000);
+      setTimeout(initAnimations, 2000);
+      
+      // Watch for dynamically added elements
+      const mutationObserver = new MutationObserver(function(mutations) {
+        initAnimations();
+      });
+      mutationObserver.observe(document.body, {
+        childList: true,
+        subtree: true
+      });
+    </script>
+
+    <script>
+      // Audio player functionality
+      let audioPlayer = null;
+      
+      window.playAudio = function(audioUrl) {
+        if (!audioUrl) return;
+        if (audioPlayer) {
+          audioPlayer.pause();
+          audioPlayer = null;
+        }
+        try {
+          audioPlayer = new Audio(audioUrl);
+          audioPlayer.loop = true;
+          audioPlayer.volume = 0.7;
+          audioPlayer.play().catch(function(err) {
+            console.log('Audio play failed:', err);
+            // User interaction required for autoplay - wait for user click
+          });
+        } catch(err) {
+          console.log('Audio creation failed:', err);
+        }
+      };
+      
+      window.stopAudio = function() {
+        if (audioPlayer) {
+          audioPlayer.pause();
+          audioPlayer.currentTime = 0;
+          audioPlayer = null;
+        }
+      };
+      
+      // Handle audio events - listen for webcake audio events
+      document.addEventListener('click', function(e) {
+        const clickedEl = e.target.closest('[id^="w-"]');
+        const clickedId = clickedEl?.id;
+        
+        if (clickedId && window.event_data && window.event_data.runtime && window.event_data.runtime.vm) {
+          // Find element data in event_data
+          const elementData = window.event_data.runtime.vm[clickedId.replace('w-', '')];
+          
+          if (elementData && elementData.events) {
+            elementData.events.forEach(function(event) {
+              if (event.type === 'click') {
+                if (event.action === 'play_audio' && event.target) {
+                  // Play audio
+                  if (window.playAudio) {
+                    window.playAudio(event.target);
+                  }
+                } else if (event.action === 'stop_audio') {
+                  // Stop audio
+                  if (window.stopAudio) {
+                    window.stopAudio();
+                  }
+                }
+                
+                // Handle show/hide element actions
+                if (event.action === 'show_hide_element' && event.target) {
+                  const targetEl = document.getElementById(event.target);
+                  if (targetEl) {
+                    if (event.onlyMode === 'show') {
+                      targetEl.style.display = '';
+                    } else if (event.onlyMode === 'hide') {
+                      targetEl.style.display = 'none';
+                    }
+                  }
+                }
+              }
+            });
+          }
+        }
+      }, true);
+    </script>
 </body>
 
 <!-- Mirrored from www.ewedinvite.site/QUOCHAI&THITHONG by HTTrack Website Copier/3.x [XR&CO'2014], Thu, 27 Nov 2025 05:30:35 GMT -->
