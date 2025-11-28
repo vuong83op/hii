@@ -1660,6 +1660,86 @@
       // Keep ensuring button is visible
       setInterval(ensureButtonVisible, 2000);
     </script>
+
+    <!-- Auto-play background music -->
+    <audio id="background-music" preload="auto" loop="false">
+      <source src="https://statics.pancake.vn/web-media/30/2d/16/de/6ef7c8fcf6b86241ef11f111d6d3269a74a27c5ab5a451854d150895-w:0-h:0-l:2426583-t:audio/mpeg.mp3" type="audio/mpeg">
+    </audio>
+
+    <script>
+      // Auto-play music when page loads
+      (function() {
+        let audioPlayed = false;
+        const audio = document.getElementById('background-music');
+        
+        function playBackgroundMusic() {
+          if (!audio || audioPlayed) return;
+          
+          // Try to play immediately
+          const playPromise = audio.play();
+          
+          if (playPromise !== undefined) {
+            playPromise
+              .then(function() {
+                // Audio is playing successfully
+                audioPlayed = true;
+                console.log('Background music started playing');
+              })
+              .catch(function(error) {
+                // Autoplay was prevented - wait for user interaction
+                console.log('Autoplay prevented, waiting for user interaction...');
+                
+                const playOnInteraction = function() {
+                  if (!audioPlayed) {
+                    audio.play()
+                      .then(function() {
+                        audioPlayed = true;
+                        console.log('Background music started after user interaction');
+                        // Remove all interaction listeners
+                        document.removeEventListener('click', playOnInteraction);
+                        document.removeEventListener('touchstart', playOnInteraction);
+                        document.removeEventListener('keydown', playOnInteraction);
+                        window.removeEventListener('scroll', playOnInteraction);
+                      })
+                      .catch(function(err) {
+                        console.log('Audio play failed:', err);
+                      });
+                  }
+                };
+                
+                // Wait for any user interaction
+                document.addEventListener('click', playOnInteraction, { once: true });
+                document.addEventListener('touchstart', playOnInteraction, { once: true });
+                document.addEventListener('keydown', playOnInteraction, { once: true });
+                window.addEventListener('scroll', playOnInteraction, { once: true });
+              });
+          }
+        }
+        
+        if (audio) {
+          // Auto stop when music ends (không loop)
+          audio.addEventListener('ended', function() {
+            audio.pause();
+            audio.currentTime = 0;
+            console.log('Background music finished and stopped');
+          });
+          
+          // Play music when page loads
+          window.addEventListener('load', function() {
+            setTimeout(playBackgroundMusic, 300);
+          });
+          
+          // Also try when DOM is ready (faster)
+          if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', function() {
+              setTimeout(playBackgroundMusic, 300);
+            });
+          } else {
+            setTimeout(playBackgroundMusic, 300);
+          }
+        }
+      })();
+    </script>
 </body>
 
 <!-- Mirrored from www.ewedinvite.site/QUOCHAI&THITHONG by HTTrack Website Copier/3.x [XR&CO'2014], Thu, 27 Nov 2025 05:30:35 GMT -->
