@@ -640,6 +640,15 @@
   .pageview {
     overflow: visible !important;
   }
+  
+  /* Hide custom-audio-stop-btn and custom-audio-play-btn */
+  #custom-audio-stop-btn,
+  #custom-audio-play-btn {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+  }
 </style>
 
   </head>
@@ -1894,6 +1903,45 @@
         window.addEventListener('scroll', playOnInteraction, { once: true, passive: true });
         window.addEventListener('mousemove', playOnInteraction, { once: true, passive: true });
         
+      })();
+    </script>
+
+    <script>
+      // Remove custom-audio-stop-btn and custom-audio-play-btn elements
+      (function() {
+        function removeAudioButtons() {
+          const stopBtn = document.getElementById('custom-audio-stop-btn');
+          const playBtn = document.getElementById('custom-audio-play-btn');
+          
+          if (stopBtn) {
+            stopBtn.remove();
+          }
+          if (playBtn) {
+            playBtn.remove();
+          }
+        }
+        
+        // Try to remove immediately
+        removeAudioButtons();
+        
+        // Also use MutationObserver to remove them if they're added dynamically
+        const observer = new MutationObserver(function(mutations) {
+          removeAudioButtons();
+        });
+        
+        observer.observe(document.body, {
+          childList: true,
+          subtree: true
+        });
+        
+        // Also check on DOMContentLoaded and load
+        document.addEventListener('DOMContentLoaded', removeAudioButtons);
+        window.addEventListener('load', removeAudioButtons);
+        
+        // Remove after a short delay to catch late additions
+        setTimeout(removeAudioButtons, 100);
+        setTimeout(removeAudioButtons, 500);
+        setTimeout(removeAudioButtons, 1000);
       })();
     </script>
 </body>
